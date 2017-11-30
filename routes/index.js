@@ -60,9 +60,9 @@ fs.readFile(path.join(__dirname, '../public/1280x720/BigBuckBunny_1280x720.m3u8'
     setInterval(eventHandler, 10000);
 });
 
-var liveSeq = 50;
+var liveSeq = 0;
 var liveM3u8 = '';
-var eventSeq = 50;
+var eventSeq = 0;
 var eventM3u8 = '';
 
 // Set CORS header
