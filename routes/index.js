@@ -26,7 +26,6 @@ fs.readFile(path.join(__dirname, '../public/1280x720/BigBuckBunny_1280x720.m3u8'
 #EXT-X-TARGETDURATION:18
 #EXT-X-MEDIA-SEQUENCE:${seq}
 `;
-            console.log(parsedM3u8);
             for (var i = seq; i < seq + 3; i++) {
                 var ts = parsedM3u8.segments[i];
                 console.log(ts);
@@ -43,16 +42,27 @@ ${ts.uri}
 var seq = 0;
 var liveM3u8 = '';
 
+// Set CORS header
+router.use(function(req, res, next) {
+  var allowOrigin;
+  if (req.header('Origin')) {
+    allowOrigin = req.header('Origin');
+  } else {
+    allowOrigin = '*';
+  }
+  res.header('Access-Control-Allow-Origin', 'http://dev.hk01.com');
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+})
+
 router.get('/video.m3u8', function(req, res, next) {
   // res.send(rawM3u8);
   data = `#EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2962000,NAME="High",CODECS="avc1.66.30",RESOLUTION=1280x720
 BigBuckBunny_1280x720.m3u8`;
-  res.header('Access-Control-Allow-Origin', 'http://dev.hk01.com');
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.send(data);
 });
 
@@ -62,27 +72,15 @@ router.get('/live.m3u8', function(req, res, next) {
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=2962000,NAME="High",CODECS="avc1.66.30",RESOLUTION=1280x720
 chunklist_live.m3u8`;
-  res.header('Access-Control-Allow-Origin', 'http://dev.hk01.com');
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.send(data);
 });
 
 router.get('/chunklist_live.m3u8', function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'http://dev.hk01.com');
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.send(liveM3u8);
 });
 
 router.get(/(.+)/, function(req, res, next) {
   var filepath = path.join(__dirname, '../public/1280x720/' + req.params[0]);
-  res.header('Access-Control-Allow-Origin', 'http://dev.hk01.com');
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.sendFile(filepath);
 });
 
